@@ -5,36 +5,53 @@ local filter = hs.fnutils.filter
 -- TODO work out if we need this
 -- hs.window.filter.forceRefreshOnSpaceChange = true
 
-function appFilter(appName)
-  -- Need keepActive as we aren't listening to the filter
-  return hs.window.filter.new(false):setAppFilter(appName):keepActive()
-end
+local appFilters = {}
 
-local config = {}
-config[appFilter('iTerm2')] = 1
-config[appFilter('Google Chrome')] = 2
-config[appFilter('Microsoft Outlook')] = 3
-config[appFilter('Microsoft OneNote')] = 3
-config[appFilter('HipChat')] = 3
-config[appFilter('Things')] = 3
-config[appFilter('Calendar')] = 3
-config[appFilter('SourceTree')] = 4
-config[appFilter('Sequel Pro')] = 4
-config[appFilter('Hammerspoon')] = 4
-config[appFilter('FreeChat for Facebook Messenger')] = -2
-config[appFilter('Spotify')] = -1
+function appFilter(appName)
+  local newFilter = appFilters[appName]
+
+  if (point == nil) then
+    -- Need keepActive as we aren't listening to the filter
+    newFilter = hs.window.filter.new(false):setAppFilter(appName):keepActive()
+    appFilters[appName] = newFilter
+  end
+
+  return newFilter
+end
 
 local laptop = 'Color LCD'
 local leftMonitor = 'DELL U2715H'
 local rightMonitor = 'DELL U2412M'
 
-hs.hotkey.bind({"cmd", "alt", "ctrl"}, "W", function()
-  tidyWindows()
-end)
+local config = {}
 
-hs.hotkey.bind({"cmd", "alt", "ctrl"}, "I", function()
-  identifyWindow()
-end)
+config = {
+  [rightMonitor] = {
+    ['iTerm2'] = 1,
+    ['Google Chrome'] = 2,
+    ['Microsoft Outlook'] = 3,
+    ['Microsoft OneNote'] = 3,
+    ['HipChat'] = 3,
+    ['Things'] = 3,
+    ['Calendar'] = 3,
+    ['SourceTree'] = 4,
+    ['Sequel Pro'] = 4,
+    ['Hammerspoon'] = 4,
+    ['FreeChat for Facebook Messenger'] = -2,
+    ['Messages'] = -2,
+    ['Spotify'] = -1
+  },
+  [laptop] = {
+    ['Spotify'] = -1
+  }
+}
+
+for monitorname, monitorconfig in pairs(config) do
+  for appName, destination in pairs(monitorconfig) do
+    -- initalise window filters
+    appFilter(appName)
+  end
+end
 
 function identifyWindow() 
   local name = hs.window.focusedWindow():application():name()
@@ -42,11 +59,26 @@ function identifyWindow()
   hs.alert.show(name)
 end
 
+function identifyScreens()
+  for i, screen in ipairs(hs.screen.allScreens()) do
+    hs.alert.show(screen:name(), {}, screen)
+  end
+end
+
 function tidyWindows()
   local monitors = monitorInfo()
-
+  local monitorconfig;
+  local monitor;
+  
   -- Choose destination monitor
-  local monitor = monitors[rightMonitor]
+  for monitorname, monitordata in pairs(monitors) do
+    monitorconfig = config[monitorname]
+ 
+    if (monitorconfig ~= nil) then
+      monitor = monitordata
+      break
+    end
+  end
 
   if monitor == nil then
     hs.alert.show('No destination monitor')
@@ -56,7 +88,7 @@ function tidyWindows()
   local rect = monitor.screen:frame()
   local screenPoints = {}
 
-  for filter, destination in pairs(config) do
+  for appName, destination in pairs(monitorconfig) do
     -- negative destinations count from the right
     if destination < 0 then
       destination = #monitor.spaces + 1 + destination
@@ -66,11 +98,12 @@ function tidyWindows()
         destination = 1
       end
     elseif destination > #monitor.spaces then
-    -- If configured destination is on  a screen we don't have just put window on the last one
+      -- If configured destination is on  a screen we don't have just put window on the last one
       destination = #monitor.spaces
     end
 
     local spaceId = monitor.spaces[destination]
+    local filter = appFilter(appName)
 
     for i, window in pairs(filter:getWindows()) do
       if not contains(window:spaces(), spaceId) and not window:isFullScreen() then
@@ -132,3 +165,13 @@ function screensByUuid()
 end
 
 require('config-watcher')
+
+keymap = {
+  W = tidyWindows,
+  I = identifyWindow,
+  S = identifyScreens
+}
+
+for key, func in pairs(keymap) do
+  hs.hotkey.bind({"cmd", "alt", "ctrl"}, key, func)
+end
