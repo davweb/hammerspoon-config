@@ -5,13 +5,11 @@ local filter = hs.fnutils.filter
 local appFilters = {}
 local config
 
--- returns true if the specified screen is not a fullscreen app
 local function notFullScreen(s)
   local windowState = spaces.spaceType(s)
   return not (windowState == spaces.types.fullscreen or windowState == spaces.types.tiled)
 end
 
--- return an AppFilter listening to specific app by name
 local function appFilter(appName)
   local newFilter = appFilters[appName]
 
@@ -35,14 +33,12 @@ local function configure(newConfig)
     end
 end
 
--- display a pop-up on each monitor with its name
 local function identifyScreens()
   for i, screen in ipairs(hs.screen.allScreens()) do
     hs.alert.show(screen:name(), {}, screen)
   end
 end
 
--- display a pop-up message giving the name of the currently focussed app and copy it to the clipboard
 local function identifyWindow() 
   local name = hs.window.focusedWindow():application():name()
   hs.pasteboard.setContents(name)
@@ -77,7 +73,7 @@ local function monitorInfo()
   return monitors
 end
 
-local function tidyWindows(alwaysArrange)
+local function tidyWindows()
   local monitors = monitorInfo()
   local monitorconfig;
   local monitor;
@@ -118,7 +114,7 @@ local function tidyWindows(alwaysArrange)
     local filter = appFilter(appName)
 
     for i, window in pairs(filter:getWindows()) do
-      if (alwaysArrange or not contains(window:spaces(), spaceId)) and not window:isFullScreen() then
+      if not contains(window:spaces(), spaceId) and not window:isFullScreen() then
         local point = screenPoints[spaceId]
 
         if (point == nil) then
@@ -137,15 +133,10 @@ local function tidyWindows(alwaysArrange)
   end
 end
 
-local function tidy(force)
-  return function()
-    tidyWindows(force)
-  end
-end
-
 return {
   configure = configure,
   identify = identifyWindow,
   identifyScreens = identifyScreens,
-  tidy = tidy
+  tidy = tidyWindows
 }
+
