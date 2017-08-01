@@ -28,6 +28,15 @@ local function reloadConfig(paths, changes)
   end
 end
 
+local function reloadConfig(paths, changes)
+  for _, file in pairs(paths) do
+    if fileModified(changes[_]) and file:sub(-4) == ".lua" then
+        hs.reload()
+        break
+    end
+  end
+end
+
 -- Store pathwatcher in a global variable so it doesn't get garbage collected
 configwatcher = hs.pathwatcher.new(os.getenv("HOME") .. "/.hammerspoon/", reloadConfig):start()
 
