@@ -1,5 +1,6 @@
 require('config-watcher')
 local windows = require('windows')
+local text = require('text')
 
 local laptop = 'Color LCD'
 local leftMonitor = 'DELL U2715H'
@@ -38,6 +39,8 @@ keymap = {
   W = windows.tidy,
   I = windows.identify,
   S = windows.identifyScreens,
+  T = text.paste('▶'),
+  A = text.paste('➝')
 }
 
 for key, func in pairs(keymap) do
