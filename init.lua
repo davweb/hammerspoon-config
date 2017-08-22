@@ -37,6 +37,7 @@ config = {
 windows.configure(config)
 
 local keymap = {
+  C = hs.toggleConsole,
   W = windows.tidy,
   F = windows.forceTidy,
   I = windows.identify,
