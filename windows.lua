@@ -73,7 +73,7 @@ local function monitorInfo()
   return monitors
 end
 
-local function tidyWindows()
+local function tidyWindows(alwaysArrange)
   local monitors = monitorInfo()
   local monitorconfig;
   local monitor;
@@ -114,7 +114,7 @@ local function tidyWindows()
     local filter = appFilter(appName)
 
     for i, window in pairs(filter:getWindows()) do
-      if not contains(window:spaces(), spaceId) and not window:isFullScreen() then
+      if (alwaysArrange or not contains(window:spaces(), spaceId)) and not window:isFullScreen() then
         local point = screenPoints[spaceId]
 
         if (point == nil) then
@@ -137,6 +137,7 @@ return {
   configure = configure,
   identify = identifyWindow,
   identifyScreens = identifyScreens,
-  tidy = tidyWindows
+  tidy = function() tidyWindows(false) end,
+  forceTidy = function() tidyWindows(true) end
 }
 

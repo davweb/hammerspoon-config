@@ -20,6 +20,7 @@ config = {
     ['SourceTree'] = 4,
     ['Sequel Pro'] = 4,
     ['Hammerspoon'] = 4,
+    ['Mailplane 3'] = -2,
     ['Inbox'] = -2,
     ['FreeChat for Facebook Messenger'] = -2,
     ['Messages'] = -2,
@@ -35,12 +36,15 @@ config = {
 
 windows.configure(config)
 
-keymap = {
+local keymap = {
   W = windows.tidy,
+  F = windows.forceTidy,
   I = windows.identify,
   S = windows.identifyScreens,
   T = text.paste('▶'),
-  A = text.paste('➝')
+  A = text.paste('➝'),
+  X = text.paste('×'),
+  H = text.paste('½')
 }
 
 for key, func in pairs(keymap) do
