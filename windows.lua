@@ -5,11 +5,13 @@ local filter = hs.fnutils.filter
 local appFilters = {}
 local config
 
+-- returns true if the specified screen is not a fullscreen app
 local function notFullScreen(s)
   local windowState = spaces.spaceType(s)
   return not (windowState == spaces.types.fullscreen or windowState == spaces.types.tiled)
 end
 
+-- return an AppFilter listening to specific app by name
 local function appFilter(appName)
   local newFilter = appFilters[appName]
 
@@ -33,12 +35,14 @@ local function configure(newConfig)
     end
 end
 
+-- display a pop-up on each monitor with its name
 local function identifyScreens()
   for i, screen in ipairs(hs.screen.allScreens()) do
     hs.alert.show(screen:name(), {}, screen)
   end
 end
 
+-- display a pop-up message giving the name of the currently focussed app and copy it to the clipboard
 local function identifyWindow() 
   local name = hs.window.focusedWindow():application():name()
   hs.pasteboard.setContents(name)
@@ -140,4 +144,3 @@ return {
   tidy = function() tidyWindows(false) end,
   forceTidy = function() tidyWindows(true) end
 }
-
