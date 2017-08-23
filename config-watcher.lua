@@ -28,5 +28,8 @@ local function reloadConfig(paths, changes)
   end
 end
 
-hs.pathwatcher.new(os.getenv("HOME") .. "/.hammerspoon/", reloadConfig):start()
+-- Store pathwatcher in a global variable so it doesn't get garbage collected
+configwatcher = hs.pathwatcher.new(os.getenv("HOME") .. "/.hammerspoon/", reloadConfig):start()
+
+-- Alert each time configuration is loaded
 hs.alert.show("Config loaded")
