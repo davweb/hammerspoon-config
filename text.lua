@@ -10,7 +10,7 @@ local function type(text)
   end
 end
 
--- returns a funcition that pastes the specified text for when hs.eventtap.keyStrokes fails
+-- returns a function that pastes the specified text for when hs.eventtap.keyStrokes fails
 local function pasteText(text)
   return function()
     local oldContents = hs.pasteboard.getContents()
