@@ -137,10 +137,15 @@ local function tidyWindows(alwaysArrange)
   end
 end
 
+local function tidy(force)
+  return function()
+    tidyWindows(force)
+  end
+end
+
 return {
   configure = configure,
   identify = identifyWindow,
   identifyScreens = identifyScreens,
-  tidy = function() tidyWindows(false) end,
-  forceTidy = function() tidyWindows(true) end
+  tidy = tidy
 }
