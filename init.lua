@@ -6,9 +6,7 @@ local laptop = 'Color LCD'
 local leftMonitor = 'DELL U2715H'
 local rightMonitor = 'DELL U2412M'
 
-local config = {}
-
-config = {
+local config = {
   [rightMonitor] = {
     ['iTerm2'] = 1,
     ['Google Chrome'] = 2,
@@ -19,6 +17,7 @@ config = {
     ['Calendar'] = 3,
     ['SourceTree'] = 4,
     ['Sequel Pro'] = 4,
+    ['MySQLWorkbench'] = 4,
     ['Hammerspoon'] = 4,
     ['Mailplane 3'] = -2,
     ['Inbox'] = -2,
@@ -38,16 +37,17 @@ windows.configure(config)
 
 local keymap = {
   C = hs.toggleConsole,
-  W = windows.tidy,
-  F = windows.forceTidy,
+  W = windows.tidy(false),
+  F = windows.tidy(true),
   I = windows.identify,
   S = windows.identifyScreens,
-  T = text.paste('▶'),
+  T = text.type('▶'),
   A = text.paste('➝'),
-  X = text.paste('×'),
-  H = text.paste('½')
+  X = text.type('×'),
+  H = text.type('½'),
+  K = text.type('✔')
 }
 
 for key, func in pairs(keymap) do
-  hs.hotkey.bind({"cmd", "alt", "ctrl"}, key, func)
+  hs.hotkey.bind({"ctrl", "alt", "cmd"}, key, func)
 end
