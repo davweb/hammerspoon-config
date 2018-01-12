@@ -15,7 +15,7 @@ local config = {
     ['HipChat'] = 3,
     ['Things'] = 3,
     ['Calendar'] = 3,
-    ['SourceTree'] = 4,
+    ['Sourcetree'] = 4,
     ['Sequel Pro'] = 4,
     ['MySQLWorkbench'] = 4,
     ['Hammerspoon'] = 4,
@@ -24,6 +24,8 @@ local config = {
     ['FreeChat for Facebook Messenger'] = -2,
     ['Messages'] = -2,
     ['Deliveries'] = -2,
+    ['Tweetbot'] = -2,
+    ['WhatsApp'] = -2,
     ['Spotify'] = -1,
     ['Overcast'] = -1
   },
