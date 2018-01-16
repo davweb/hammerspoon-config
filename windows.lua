@@ -1,8 +1,10 @@
+require('app-filters')
 local spaces = require("hs._asm.undocumented.spaces")
+local appFilter = require("app-filters")
 local contains = hs.fnutils.contains
 local filter = hs.fnutils.filter
 
-local appFilters = {}
+
 local config
 
 -- returns true if the specified screen is not a fullscreen app
@@ -11,26 +13,13 @@ local function notFullScreen(s)
   return not (windowState == spaces.types.fullscreen or windowState == spaces.types.tiled)
 end
 
--- return an AppFilter listening to specific app by name
-local function appFilter(appName)
-  local newFilter = appFilters[appName]
-
-  if (newFilter == nil) then
-    -- Need keepActive as we aren't listening to the filter
-    newFilter = hs.window.filter.new(false):setAppFilter(appName):keepActive()
-    appFilters[appName] = newFilter
-  end
-
-  return newFilter
-end
-
 local function configure(newConfig)
     config = newConfig
 
     for monitorname, monitorconfig in pairs(config) do
         for appName, destination in pairs(monitorconfig) do
             -- initalise window filters
-            appFilter(appName)
+            appFilter.get(appName)
         end
     end
 end
@@ -115,7 +104,7 @@ local function tidyWindows(alwaysArrange)
     end
 
     local spaceId = monitor.spaces[destination]
-    local filter = appFilter(appName)
+    local filter = appFilter.get(appName)
 
     for i, window in pairs(filter:getWindows()) do
       if (alwaysArrange or not contains(window:spaces(), spaceId)) and not window:isFullScreen() then
