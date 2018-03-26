@@ -2,6 +2,7 @@ require('config-watcher')
 local windows = require('windows')
 local text = require('text')
 require('keyboard')
+require('power')
 
 local laptop = 'Color LCD'
 local leftMonitor = 'DELL U2715H'
