@@ -46,6 +46,7 @@ local function launchSpotify()
   hs.application.launchOrFocus("Spotify")
 end
 
+-- By default Play launches iTunes if no music app is running. This makes it launch Spotify instead
 local function handlePlay(down, flags)
   if not down then
     return false
@@ -96,7 +97,7 @@ end
 -- Initialise Spotify appFilter
 appFilter.get("Spotify")
 
--- Store keyboard listener  in a global variable so it doesn't get garbage collected
+-- Store keyboard listener in a global variable so it doesn't get garbage collected
 keyboardListener = hs.eventtap.new({types.keyDown, types.keyUp, types.NSSystemDefined}, keyPressed)
 keyboardListener:start()
 
