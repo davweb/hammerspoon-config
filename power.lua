@@ -1,3 +1,5 @@
+-- luacheck: globals hs powerSource batteryWatcher
+
 local function mainsPower()
     print("AC Power")
     -- Nothing currently
@@ -28,9 +30,9 @@ local function powerChanged()
     end
 end
 
-local function batteryChanged() 
+local function batteryChanged()
     local currentPowerSource = hs.battery.powerSource()
-    
+
     if (currentPowerSource ~= powerSource) then
         powerSource = currentPowerSource
         powerChanged()
@@ -41,5 +43,5 @@ end
 powerSource = ""
 
 -- Store battery watcher in a global variable so it doesn't get garbage collected
-batteryWatcher = hs.battery.watcher.new(batteryChanged) 
+batteryWatcher = hs.battery.watcher.new(batteryChanged)
 batteryWatcher:start()

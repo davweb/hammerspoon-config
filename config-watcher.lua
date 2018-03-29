@@ -1,3 +1,5 @@
+-- luacheck: globals hs configwatcher
+
 local FILE_CHANGED = {
   itemCreated = true,
   itemRemoved = true,
