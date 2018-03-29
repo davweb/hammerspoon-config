@@ -54,9 +54,7 @@ local function handlePlay(down)
     return false
   end
 
-  local spotify = appFilter.get("Spotify")
-
-  if next(spotify:getWindows()) ~= nil then
+  if appFilter.isRunning("Spotify", "VLC") then
     -- If there are any Spotify windows we can do nothing
     return false
   end
@@ -96,8 +94,9 @@ local function keyPressed(event)
   return false
 end
 
--- Initialise Spotify appFilter
+-- Initialise appFilters
 appFilter.get("Spotify")
+appFilter.get("VLC")
 
 -- Store keyboard listener in a global variable so it doesn't get garbage collected
 keyboardListener = hs.eventtap.new({types.keyDown, types.keyUp, types.NSSystemDefined}, keyPressed)
