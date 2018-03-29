@@ -8,6 +8,7 @@ local function killApp(name)
 
     if app ~= nil then
         app:kill()
+        print("killed " .. name)
     end
 end
 
