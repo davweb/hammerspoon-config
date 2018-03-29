@@ -1,3 +1,5 @@
+-- luacheck: globals hs
+
 require('config-watcher')
 local windows = require('windows')
 local text = require('text')

@@ -1,3 +1,5 @@
+-- luacheck: globals hs keyboardListener
+
 local types = hs.eventtap.event.types
 local appFilter = require("app-filters")
 
@@ -22,7 +24,7 @@ local keyCodesToFunctionKeys = {
   -- 97 = KEYBOARD_BRIGHTER
 }
 
-local function currentApplication() 
+local function currentApplication()
   local focusedWindow = hs.window.focusedWindow()
 
   if focusedWindow == nil then
@@ -47,14 +49,14 @@ local function launchSpotify()
 end
 
 -- By default Play launches iTunes if no music app is running. This makes it launch Spotify instead
-local function handlePlay(down, flags)
+local function handlePlay(down)
   if not down then
     return false
   end
 
   local spotify = appFilter.get("Spotify")
 
-  for i, window in pairs(spotify:getWindows()) do
+  if next(spotify:getWindows()) ~= nil then
     -- If there are any Spotify windows we can do nothing
     return false
   end
@@ -65,19 +67,19 @@ end
 
 local function handleKey(key, down, flags)
   -- print(key, down, flagsAsText(flags))
-  -- local app = currentApplication() 
+  -- local app = currentApplication()
 
   if key == 'PLAY' then
-    return handlePlay(down, flags)
+    return handlePlay(down)
   end
 
   return false
 end
 
-local function keyPressed(event) 
+local function keyPressed(event)
   if event:getType() == types.keyDown or event:getType() == types.keyUp then
     local fnKey = keyCodesToFunctionKeys[event:getKeyCode()]
-    
+
     if fnKey then
       return handleKey(fnKey, event:getType() == types.keyDown, event:getFlags())
     end
@@ -85,13 +87,13 @@ local function keyPressed(event)
 
   if event:getType() == types.NSSystemDefined then
     local data = event:systemKey()
-    
+
     if data.key ~= nil and data.down ~= nil then
       return handleKey(data.key, data.down, event:getFlags())
     end
   end
 
-  return false 
+  return false
 end
 
 -- Initialise Spotify appFilter
@@ -100,5 +102,3 @@ appFilter.get("Spotify")
 -- Store keyboard listener in a global variable so it doesn't get garbage collected
 keyboardListener = hs.eventtap.new({types.keyDown, types.keyUp, types.NSSystemDefined}, keyPressed)
 keyboardListener:start()
-
-

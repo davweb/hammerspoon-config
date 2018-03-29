@@ -1,5 +1,7 @@
+-- luacheck: globals hs
+
 -- perform a paste using ⌘+V
-local function paste() 
+local function paste()
   hs.eventtap.keyStroke({"cmd"}, "v")
 end
 
@@ -16,7 +18,7 @@ local function pasteText(text)
     local oldContents = hs.pasteboard.getContents()
     hs.pasteboard.setContents(text)
     paste()
-    
+
     -- workaround to ensure we don't put the old clipboard contents back before the paste happens
     hs.timer.doAfter(0.1, function ()
       hs.pasteboard.setContents(oldContents)

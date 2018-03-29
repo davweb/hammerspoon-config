@@ -1,3 +1,5 @@
+-- luacheck: globals hs appFilters
+
 -- Store appFilters in a global so they're not garbage collected
 appFilters = {}
 
@@ -17,4 +19,3 @@ end
 return {
   get = get
 }
-  

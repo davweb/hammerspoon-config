@@ -1,3 +1,5 @@
+-- luacheck: globals hs
+
 require('app-filters')
 local spaces = require("hs._asm.undocumented.spaces")
 local appFilter = require("app-filters")
@@ -11,8 +13,8 @@ local monitorConfig = {}
 
 local function addCategory(apps)
   category = category + 1
-  
-  for i, appName in ipairs(apps) do
+
+  for _, appName in ipairs(apps) do
     appConfig[appName] = category
 
     -- initalise window filters
@@ -37,13 +39,13 @@ end
 
 -- display a pop-up on each monitor with its name
 local function identifyScreens()
-  for i, screen in ipairs(hs.screen.allScreens()) do
+  for _, screen in ipairs(hs.screen.allScreens()) do
     hs.alert.show(screen:name(), {}, screen)
   end
 end
 
 -- display a pop-up message giving the name of the currently focussed app and copy it to the clipboard
-local function identifyWindow() 
+local function identifyWindow()
   local name = hs.window.focusedWindow():application():name()
   hs.pasteboard.setContents(name)
   hs.alert.show(name)
@@ -52,7 +54,7 @@ end
 local function screensByUuid()
   local map = {}
 
-  for i, screen in pairs(hs.screen.allScreens()) do
+  for _, screen in pairs(hs.screen.allScreens()) do
     local uuid = screen:spacesUUID()
     map[uuid] = screen
   end
@@ -61,7 +63,7 @@ local function screensByUuid()
 end
 
 -- I'm calling a monitor a combination of a screen and its spaces
-local function monitorInfo() 
+local function monitorInfo()
   local screensMap = screensByUuid()
   local monitors = {}
 
@@ -69,7 +71,7 @@ local function monitorInfo()
   for uuid, spacesList in pairs(spaces.layout()) do
     local screen = screensMap[uuid]
     local monitor = {}
-    monitor.spaces = filter(spacesList, notFullScreen) 
+    monitor.spaces = filter(spacesList, notFullScreen)
     monitor.screen = screen
     monitors[screen:name()] = monitor
   end
@@ -80,8 +82,8 @@ end
 local function copyOfAppConfig()
   local copy = {}
 
-  for appName, category in pairs(appConfig) do
-      copy[appName] = category
+  for appName, appCategory in pairs(appConfig) do
+      copy[appName] = appCategory
   end
 
   return copy
@@ -92,7 +94,7 @@ local function checkDestination(destination, numberOfSpaces)
   -- negative destinations count from the right
   if destination < 0 then
     destination = numberOfSpaces + 1 + destination
-    
+
     -- Can't go past first screen
     if destination < 1 then
       destination = 1
@@ -108,9 +110,9 @@ end
 local function tidyWindows(alwaysArrange)
   local monitors = monitorInfo()
   local appConfigCopy = copyOfAppConfig()
-  
+
   -- Loop over monitors in order
-  for i, monitorData in ipairs(monitorConfig) do
+  for _, monitorData in ipairs(monitorConfig) do
     local monitorName = monitorData.name
     local monitorCategories = monitorData.categories
     local monitor = monitors[monitorName]
@@ -120,18 +122,18 @@ local function tidyWindows(alwaysArrange)
       local screenPoints = {}
 
       -- Loop over apps to see if they should move to this window
-      for appName, category in pairs(appConfigCopy) do
-        local destination = monitorCategories[category]
+      for appName, appCategory in pairs(appConfigCopy) do
+        local destination = monitorCategories[appCategory]
 
         if destination ~= nil then
           destination = checkDestination(destination, #monitor.spaces)
           appConfigCopy[appName] = nil
 
           local spaceId = monitor.spaces[destination]
-          local filter = appFilter.get(appName)
+          local localFilter = appFilter.get(appName)
 
           -- Loop over windows for app
-          for i, window in pairs(filter:getWindows()) do
+          for _, window in pairs(localFilter:getWindows()) do
             if (alwaysArrange or not contains(window:spaces(), spaceId)) and not window:isFullScreen() then
               local point = screenPoints[spaceId]
 
