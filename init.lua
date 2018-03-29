@@ -33,7 +33,11 @@ windows.addCategory('devtools', {
   'Sourcetree',
   'Sequel Pro',
   'MySQLWorkbench',
-  'Hammerspoon'
+  'Hammerspoon',
+  'GitHub Desktop'
+})
+windows.addCategory('editors', {
+  'Code'
 })
 windows.addCategory('media', {
   'Spotify',
@@ -51,6 +55,7 @@ windows.addMonitor('DELL U2412M', {
   media = -1
 })
 windows.addMonitor('DELL U2715H', {
+  editors = 1
 })
 -- Laptop
 windows.addMonitor('Color LCD', {
@@ -58,6 +63,7 @@ windows.addMonitor('Color LCD', {
   browsers = 2,
   messages = 3,
   devtools = 4,
+  editors = 5,
   personal = -2,
   media = -1
 })
