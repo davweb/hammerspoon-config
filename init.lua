@@ -4,38 +4,60 @@ local text = require('text')
 require('keyboard')
 require('power')
 
-local laptop = 'Color LCD'
-local leftMonitor = 'DELL U2715H'
-local rightMonitor = 'DELL U2412M'
+local terminals = windows.addCategory({
+  'iTerm2'
+})
+local browsers = windows.addCategory({
+  'Google Chrome'
+})
+local personal = windows.addCategory({
+  'Mailplane 3',
+  'Inbox',
+  'FreeChat for Facebook Messenger',
+  'Messages',
+  'Deliveries',
+  'Tweetbot',
+  'WhatsApp'
+})
+local messages = windows.addCategory({
+  'Microsoft Outlook',
+  'Microsoft OneNote',
+  'HipChat',
+  'Things',
+  'Calendar'
+})
+local devtools = windows.addCategory({
+  'Sourcetree',
+  'Sequel Pro',
+  'MySQLWorkbench',
+  'Hammerspoon'
+})
+local media = windows.addCategory({
+  'Spotify',
+  'Overcast',
+  'VLC'
+})
 
-local config = {
-  [rightMonitor] = {
-    ['iTerm2'] = 1,
-    ['Google Chrome'] = 2,
-    ['Microsoft Outlook'] = 3,
-    ['Microsoft OneNote'] = 3,
-    ['HipChat'] = 3,
-    ['Things'] = 3,
-    ['Calendar'] = 3,
-    ['SourceTree'] = 4,
-    ['Sequel Pro'] = 4,
-    ['MySQLWorkbench'] = 4,
-    ['Hammerspoon'] = 4,
-    ['Mailplane 3'] = -2,
-    ['Inbox'] = -2,
-    ['FreeChat for Facebook Messenger'] = -2,
-    ['Messages'] = -2,
-    ['Deliveries'] = -2,
-    ['Spotify'] = -1,
-    ['Overcast'] = -1
-  },
-  [laptop] = {
-    ['Spotify'] = -1,
-    ['Overcast'] = -1
-  }
-}
-
-windows.configure(config)
+-- Work Monitors
+windows.addMonitor('DELL U2412M', {
+  [terminals] = 1,
+  [browsers] = 2,
+  [messages] = 3,
+  [devtools] = 4,
+  [personal] = -2,
+  [media] = -1
+})
+windows.addMonitor('DELL U2715H', {
+})
+-- Laptop
+windows.addMonitor('Color LCD', {
+  [terminals] = 1,
+  [browsers] = 2,
+  [messages] = 3,
+  [devtools] = 4,
+  [personal] = -2,
+  [media] = -1
+})
 
 local keymap = {
   C = hs.toggleConsole,

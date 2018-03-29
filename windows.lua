@@ -4,24 +4,35 @@ local appFilter = require("app-filters")
 local contains = hs.fnutils.contains
 local filter = hs.fnutils.filter
 
+-- local config
+local category = 0
+local appConfig = {}
+local monitorConfig = {}
 
-local config
+local function addCategory(apps)
+  category = category + 1
+  
+  for i, appName in ipairs(apps) do
+    appConfig[appName] = category
+
+    -- initalise window filters
+    appFilter.get(appName)
+  end
+
+  return category
+end
+
+local function addMonitor(name, monitorCategories)
+  local monitorData = {}
+  monitorData.name = name
+  monitorData.categories = monitorCategories
+  table.insert(monitorConfig, monitorData)
+end
 
 -- returns true if the specified screen is not a fullscreen app
 local function notFullScreen(s)
   local windowState = spaces.spaceType(s)
   return not (windowState == spaces.types.fullscreen or windowState == spaces.types.tiled)
-end
-
-local function configure(newConfig)
-    config = newConfig
-
-    for monitorname, monitorconfig in pairs(config) do
-        for appName, destination in pairs(monitorconfig) do
-            -- initalise window filters
-            appFilter.get(appName)
-        end
-    end
 end
 
 -- display a pop-up on each monitor with its name
@@ -66,61 +77,78 @@ local function monitorInfo()
   return monitors
 end
 
+local function copyOfAppConfig()
+  local copy = {}
+
+  for appName, category in pairs(appConfig) do
+      copy[appName] = category
+  end
+
+  return copy
+end
+
+-- check the desired destination against the number of spaces
+local function checkDestination(destination, numberOfSpaces)
+  -- negative destinations count from the right
+  if destination < 0 then
+    destination = numberOfSpaces + 1 + destination
+    
+    -- Can't go past first screen
+    if destination < 1 then
+      destination = 1
+    end
+  elseif destination > numberOfSpaces then
+    -- If configured destination is on  a screen we don't have just put window on the last one
+    destination = numberOfSpaces
+  end
+
+  return destination
+end
+
 local function tidyWindows(alwaysArrange)
   local monitors = monitorInfo()
-  local monitorconfig;
-  local monitor;
+  local appConfigCopy = copyOfAppConfig()
   
-  -- Choose destination monitor
-  for monitorname, monitordata in pairs(monitors) do
-    monitorconfig = config[monitorname]
- 
-    if (monitorconfig ~= nil) then
-      monitor = monitordata
-      break
-    end
-  end
+  -- Loop over monitors in order
+  for i, monitorData in ipairs(monitorConfig) do
+    local monitorName = monitorData.name
+    local monitorCategories = monitorData.categories
+    local monitor = monitors[monitorName]
 
-  if monitor == nil then
-    hs.alert.show('No destination monitor')
-    return
-  end
+    if monitor ~= nil then
+      local rect = monitor.screen:frame()
+      local screenPoints = {}
 
-  local rect = monitor.screen:frame()
-  local screenPoints = {}
+      -- Loop over apps to see if they should move to this window
+      for appName, category in pairs(appConfigCopy) do
+        local destination = monitorCategories[category]
 
-  for appName, destination in pairs(monitorconfig) do
-    -- negative destinations count from the right
-    if destination < 0 then
-      destination = #monitor.spaces + 1 + destination
-      
-      -- Can't go past first screen
-      if destination < 1 then
-        destination = 1
-      end
-    elseif destination > #monitor.spaces then
-      -- If configured destination is on  a screen we don't have just put window on the last one
-      destination = #monitor.spaces
-    end
+        if destination ~= nil then
+          destination = checkDestination(destination, #monitor.spaces)
+          appConfigCopy[appName] = nil
 
-    local spaceId = monitor.spaces[destination]
-    local filter = appFilter.get(appName)
+          local spaceId = monitor.spaces[destination]
+          local filter = appFilter.get(appName)
 
-    for i, window in pairs(filter:getWindows()) do
-      if (alwaysArrange or not contains(window:spaces(), spaceId)) and not window:isFullScreen() then
-        local point = screenPoints[spaceId]
+          -- Loop over windows for app
+          for i, window in pairs(filter:getWindows()) do
+            if (alwaysArrange or not contains(window:spaces(), spaceId)) and not window:isFullScreen() then
+              local point = screenPoints[spaceId]
 
-        if (point == nil) then
-          point = hs.geometry.point(rect.x, rect.y)
-          screenPoints[spaceId] = point
+              if (point == nil) then
+                point = hs.geometry.point(rect.x, rect.y)
+                screenPoints[spaceId] = point
+              end
+
+              point.x = point.x + 50
+              point.y = point.y + 50
+
+              window:spacesMoveTo(spaceId)
+              window:setTopLeft(point)
+              window:raise()
+            end
+          end
         end
-
-        point.x = point.x + 50
-        point.y = point.y + 50
-
-        window:spacesMoveTo(spaceId)
-        window:setTopLeft(point)
-        window:raise()
       end
     end
   end
@@ -133,7 +161,8 @@ local function tidy(force)
 end
 
 return {
-  configure = configure,
+  addCategory = addCategory,
+  addMonitor = addMonitor,
   identify = identifyWindow,
   identifyScreens = identifyScreens,
   tidy = tidy
