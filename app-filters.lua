@@ -16,6 +16,16 @@ local function get(appName)
   return newFilter
 end
 
+local function isRunning(...)
+  local appRunning = function(name)
+    local app = get(name)
+    return next(app:getWindows()) ~= nil
+  end
+
+  return hs.fnutils.some({...}, appRunning)
+end
+
 return {
-  get = get
+  get = get,
+  isRunning = isRunning
 }
