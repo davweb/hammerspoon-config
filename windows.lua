@@ -7,13 +7,10 @@ local contains = hs.fnutils.contains
 local filter = hs.fnutils.filter
 
 -- local config
-local category = 0
 local appConfig = {}
 local monitorConfig = {}
 
-local function addCategory(apps)
-  category = category + 1
-
+local function addCategory(category, apps)
   for _, appName in ipairs(apps) do
     appConfig[appName] = category
 

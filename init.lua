@@ -6,13 +6,13 @@ local text = require('text')
 require('keyboard')
 require('power')
 
-local terminals = windows.addCategory({
+windows.addCategory('terminals', {
   'iTerm2'
 })
-local browsers = windows.addCategory({
+windows.addCategory('browsers', {
   'Google Chrome'
 })
-local personal = windows.addCategory({
+windows.addCategory('personal', {
   'Mailplane 3',
   'Inbox',
   'FreeChat for Facebook Messenger',
@@ -21,20 +21,20 @@ local personal = windows.addCategory({
   'Tweetbot',
   'WhatsApp'
 })
-local messages = windows.addCategory({
+windows.addCategory('messages', {
   'Microsoft Outlook',
   'Microsoft OneNote',
   'HipChat',
   'Things',
   'Calendar'
 })
-local devtools = windows.addCategory({
+windows.addCategory('devtools', {
   'Sourcetree',
   'Sequel Pro',
   'MySQLWorkbench',
   'Hammerspoon'
 })
-local media = windows.addCategory({
+windows.addCategory('media', {
   'Spotify',
   'Overcast',
   'VLC'
@@ -42,23 +42,23 @@ local media = windows.addCategory({
 
 -- Work Monitors
 windows.addMonitor('DELL U2412M', {
-  [terminals] = 1,
-  [browsers] = 2,
-  [messages] = 3,
-  [devtools] = 4,
-  [personal] = -2,
-  [media] = -1
+  terminals = 1,
+  browsers = 2,
+  messages = 3,
+  devtools = 4,
+  personal = -2,
+  media = -1
 })
 windows.addMonitor('DELL U2715H', {
 })
 -- Laptop
 windows.addMonitor('Color LCD', {
-  [terminals] = 1,
-  [browsers] = 2,
-  [messages] = 3,
-  [devtools] = 4,
-  [personal] = -2,
-  [media] = -1
+  terminals = 1,
+  browsers = 2,
+  messages = 3,
+  devtools = 4,
+  personal = -2,
+  media = -1
 })
 
 local keymap = {
