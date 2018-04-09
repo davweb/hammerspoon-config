@@ -19,7 +19,6 @@ local function batteryPower()
 
     -- Kill Apps that force Discrete GPU when switching to battery power
     killApp('FreeChat for Facebook Messenger')
-    killApp('Spotify')
 end
 
 local function powerChanged()
