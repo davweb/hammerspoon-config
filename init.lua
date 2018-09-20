@@ -80,7 +80,7 @@ windows.addMonitor('Color LCD', {
   media = -1
 })
 
-timers.scheduleApp("Things", "09:00", "Daily Review")
+timers.scheduleApp("Things", "09:30", "Daily Review")
 
 local keymap = {
   C = hs.toggleConsole,
