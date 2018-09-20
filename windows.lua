@@ -106,6 +106,7 @@ end
 
 local function tidyWindows(alwaysArrange)
   local monitors = monitorInfo()
+  -- We copy the appConfig so we can delete the apps we've processed 
   local appConfigCopy = copyOfAppConfig()
 
   -- Loop over monitors in order
@@ -135,16 +136,16 @@ local function tidyWindows(alwaysArrange)
               local point = screenPoints[spaceId]
 
               if (point == nil) then
-                point = hs.geometry.point(rect.x, rect.y)
+                point = hs.geometry.point(rect.x + 25, rect.y + 25)
                 screenPoints[spaceId] = point
               end
-
-              point.x = point.x + 50
-              point.y = point.y + 50
 
               window:spacesMoveTo(spaceId)
               window:setTopLeft(point)
               window:raise()
+
+              point.x = point.x + 50
+              point.y = point.y + 50
             end
           end
         end
