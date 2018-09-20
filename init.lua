@@ -42,20 +42,31 @@ windows.addCategory('editors', {
 windows.addCategory('media', {
   'Spotify',
   'Overcast',
-  'VLC'
+  'VLC',
+  'iPlayer Radio'
 })
 
 -- Work Monitors
 windows.addMonitor('DELL U2412M', {
   terminals = 1,
   browsers = 2,
-  messages = 3,
-  devtools = 4,
+  devtools = 3,
   personal = -2,
   media = -1
 })
 windows.addMonitor('DELL U2715H', {
-  editors = 1
+  editors = 1,
+  messages = 2
+})
+-- Home Monitor
+windows.addMonitor('LG Ultra HD', {
+  terminals = 1,
+  browsers = 2,
+  messages = 3,
+  devtools = 4,
+  editors = 5,
+  personal = -2,
+  media = -1
 })
 -- Laptop
 windows.addMonitor('Color LCD', {
