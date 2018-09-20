@@ -34,7 +34,8 @@ windows.addCategory('devtools', {
   'Sequel Pro',
   'MySQLWorkbench',
   'Hammerspoon',
-  'GitHub Desktop'
+  'GitHub Desktop',
+  'Tower'
 })
 windows.addCategory('editors', {
   'Code'
