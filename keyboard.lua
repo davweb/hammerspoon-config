@@ -3,27 +3,6 @@
 local types = hs.eventtap.event.types
 local appFilter = require("app-filters")
 
-local keyCodesToFunctionKeys = {
-  [122] = "F1",
-  [120] = "F2",
-  [99] = "F3",
-  [118] = "F4",
-  [96] = "F5",
-  [97] = "F6",
-  [98] = "F7",
-  [100] = "F8",
-  [101] = "F9",
-  [109] = "F10",
-  [103] = "F11",
-  [111] = "F12",
-  [145] = "DARKER",
-  [144] = "LIGHTER",
-  [160] = "MISSION_CONTROL",
-  [131] = "LAUNCHPAD"
-  -- 96 = KEYBOARD_DARKER,
-  -- 97 = KEYBOARD_BRIGHTER
-}
-
 local function currentApplication()
   local focusedWindow = hs.window.focusedWindow()
 
@@ -76,7 +55,7 @@ end
 
 local function keyPressed(event)
   if event:getType() == types.keyDown or event:getType() == types.keyUp then
-    local fnKey = keyCodesToFunctionKeys[event:getKeyCode()]
+    local fnKey = hs.keycodes.map[event:getKeyCode()]
 
     if fnKey then
       return handleKey(fnKey, event:getType() == types.keyDown, event:getFlags())
