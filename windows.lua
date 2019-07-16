@@ -36,9 +36,14 @@ end
 
 -- display a pop-up on each monitor with its name
 local function identifyScreens()
+  local names = 'Monitors:'
   for _, screen in ipairs(hs.screen.allScreens()) do
-    hs.alert.show(screen:name(), {}, screen)
+    local name = screen:name()
+    hs.alert.show(name, {}, screen)
+    names = names .. ' ' .. name
   end
+
+  hs.pasteboard.setContents(names)
 end
 
 -- display a pop-up message giving the name of the currently focussed app and copy it to the clipboard
