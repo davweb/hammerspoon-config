@@ -14,9 +14,7 @@ windows.addCategory('browsers', {
   'Google Chrome'
 })
 windows.addCategory('personal', {
-  'Mailplane 3',
-  'Inbox',
-  'FreeChat for Facebook Messenger',
+  'Spark',
   'Messages',
   'Deliveries',
   'Tweetbot',
@@ -25,11 +23,14 @@ windows.addCategory('personal', {
 windows.addCategory('messages', {
   'Microsoft Outlook',
   'Microsoft OneNote',
-  'HipChat',
   'Things',
-  'Calendar'
+  'Contacts',
+  'Calendar',
+  'Fantastical',
+  'Slack'
 })
 windows.addCategory('devtools', {
+  'Azure Data Studio',
   'Sourcetree',
   'Sequel Pro',
   'MySQLWorkbench',
@@ -47,8 +48,9 @@ windows.addCategory('media', {
   'iPlayer Radio'
 })
 
+
 -- Work Monitors
-windows.addMonitor('DELL U2412M', {
+windows.addMonitor('DELL U2719DC', {
   terminals = 1,
   browsers = 2,
   devtools = 3,
@@ -90,6 +92,7 @@ local keymap = {
   S = windows.identifyScreens,
   T = text.type('▶'),
   A = text.paste('➝'),
+  U = text.type('↑'),
   X = text.type('×'),
   H = text.type('½'),
   K = text.type('✔')
