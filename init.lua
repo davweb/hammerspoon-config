@@ -6,6 +6,7 @@ local text = require('text')
 local timers = require('timers')
 require('keyboard')
 require('power')
+require('donotdisturb')
 
 windows.addCategory('terminals', {
   'iTerm2'
