@@ -1,4 +1,4 @@
--- luacheck: globals hs powerSource batteryWatcher
+-- luacheck: globals hs powerSource batteryWatcher sessionWatcher
 
 local function mainsPower()
     print("AC Power")
@@ -18,7 +18,7 @@ local function batteryPower()
     print("Battery Power")
 
     -- Kill Apps that force Discrete GPU when switching to battery power
-    killApp('FreeChat for Facebook Messenger')
+    killApp("PDF Expert")
 end
 
 local function powerChanged()
@@ -38,9 +38,22 @@ local function batteryChanged()
     end
 end
 
+local function sessionChanged(event)
+    if event == hs.caffeinate.watcher.systemDidWake then
+        if hs.wifi.currentNetwork() ~= "TAMG" and hs.wifi.currentNetwork() ~= "ta" then
+            print "Closing work Apps"
+            killApp("Signal")
+        end
+    end
+end
+
 -- Store powerSource in a global because we want to remember it
 powerSource = ""
 
 -- Store battery watcher in a global variable so it doesn't get garbage collected
 batteryWatcher = hs.battery.watcher.new(batteryChanged)
 batteryWatcher:start()
+
+-- Story session watcher in a global variable so it doesn't get garbage collected
+sessionWatcher = hs.caffeinate.watcher.new(sessionChanged)
+sessionWatcher:start()
