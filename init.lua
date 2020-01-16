@@ -3,7 +3,6 @@
 require('config-watcher')
 local windows = require('windows')
 local text = require('text')
-local timers = require('timers')
 require('keyboard')
 require('power')
 require('do-not-disturb')
@@ -82,8 +81,6 @@ windows.addMonitor('Color LCD', {
   personal = -2,
   media = -1
 })
-
-timers.scheduleApp("Things", "09:30", "Daily Review")
 
 local keymap = {
   C = hs.toggleConsole,
