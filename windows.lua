@@ -34,11 +34,23 @@ local function notFullScreen(s)
   return not (windowState == spaces.types.fullscreen or windowState == spaces.types.tiled)
 end
 
+-- workaround for iPad via Sidecar not having a name
+local function monitorName(screen)
+  local name = screen:name()
+
+  -- this may not be true for all cases where name is nil but works for me
+  if name == nil then
+    name = 'iPad'
+  end
+
+  return name
+end
+
 -- display a pop-up on each monitor with its name
 local function identifyScreens()
   local names = 'Monitors:'
   for _, screen in ipairs(hs.screen.allScreens()) do
-    local name = screen:name()
+    local name = monitorName(screen)
     hs.alert.show(name, {}, screen)
     names = names .. ' ' .. name
   end
@@ -75,7 +87,7 @@ local function monitorInfo()
     local monitor = {}
     monitor.spaces = filter(spacesList, notFullScreen)
     monitor.screen = screen
-    monitors[screen:name()] = monitor
+    monitors[monitorName(screen)] = monitor
   end
 
   return monitors

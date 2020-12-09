@@ -5,29 +5,35 @@ local windows = require('windows')
 local text = require('text')
 require('keyboard')
 require('power')
-require('do-not-disturb')
+-- require('do-not-disturb')
 
 windows.addCategory('terminals', {
   'iTerm2'
 })
 windows.addCategory('browsers', {
-  'Google Chrome'
+  'Google Chrome',
+  'Firefox',
+  'Safari',
+  '1Password 7'
 })
 windows.addCategory('personal', {
   'Spark',
   'Messages',
   'Deliveries',
   'Tweetbot',
-  'WhatsApp'
+  'WhatsApp',
+  'Signal'
 })
 windows.addCategory('messages', {
   'Microsoft Outlook',
   'Microsoft OneNote',
   'Things',
   'Contacts',
-  'Calendar',
-  'Fantastical',
   'Slack'
+})
+windows.addCategory('calendars', {
+  'Calendar',
+  'Fantastical'
 })
 windows.addCategory('devtools', {
   'Azure Data Studio',
@@ -39,7 +45,8 @@ windows.addCategory('devtools', {
   'Tower'
 })
 windows.addCategory('editors', {
-  'Code'
+  'Code',
+  'Soulver'
 })
 windows.addCategory('media', {
   'Spotify',
@@ -47,30 +54,31 @@ windows.addCategory('media', {
   'VLC',
   'iPlayer Radio'
 })
+windows.addCategory('conferencing', {
+  'BlueJeans'
+})
 
 
 -- Work Monitors
+-- windows.addMonitor('DELL U2715H', {
+--   editors = 1,
+--   messages = 2
+-- })
+-- Home Monitor
 windows.addMonitor('DELL U2719DC', {
   terminals = 1,
   browsers = 2,
-  devtools = 3,
+  conferencing = 3,
   personal = -2,
   media = -1
 })
-windows.addMonitor('DELL U2715H', {
-  editors = 1,
-  messages = 2
-})
--- Home Monitor
 windows.addMonitor('LG Ultra HD', {
-  terminals = 1,
-  browsers = 2,
-  messages = 3,
-  devtools = 4,
-  editors = 5,
-  personal = -2,
-  media = -1
+  messages = 1,
+  calendars = 2,
+  editors = 3,
+  devtools = 4
 })
+
 -- Laptop
 windows.addMonitor('Color LCD', {
   terminals = 1,
