@@ -77,6 +77,7 @@ end
 appFilter.get("Spotify")
 appFilter.get("VLC")
 appFilter.get("iPlayer Radio")
+appFilter.get("Sonos")
 
 -- Store keyboard listener in a global variable so it doesn't get garbage collected
 keyboardListener = hs.eventtap.new({types.keyDown, types.keyUp, types.NSSystemDefined}, keyPressed)
