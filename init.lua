@@ -92,6 +92,7 @@ windows.addMonitor('Color LCD', {
 
 local keymap = {
   C = hs.toggleConsole,
+  -- L = network.swapLocation,
   W = windows.tidy(false),
   F = windows.tidy(true),
   I = windows.identify,
@@ -102,6 +103,7 @@ local keymap = {
   X = text.type('×'),
   H = text.type('½'),
   K = text.type('✔')
+
 }
 
 for key, func in pairs(keymap) do
