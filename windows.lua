@@ -121,6 +121,24 @@ local function checkDestination(destination, numberOfSpaces)
   return destination
 end
 
+local function bypassedWindows()
+  local runningApps = {}
+  
+  for i, app in pairs(hs.application.runningApplications()) do
+    if app:kind() == 1 then
+      runningApps[app:name()] = 'running'
+    end
+  end
+
+  for appName, appCategory in pairs(appConfig) do
+    runningApps[appName] = nil
+  end
+
+  for appName, _ in pairs(runningApps) do
+    print(appName)
+  end
+end
+
 local function tidyWindows(alwaysArrange)
   local monitors = monitorInfo()
   -- We copy the appConfig so we can delete the apps we've processed 
@@ -182,5 +200,6 @@ return {
   addMonitor = addMonitor,
   identify = identifyWindow,
   identifyScreens = identifyScreens,
-  tidy = tidy
+  tidy = tidy,
+  bypassedWindows = bypassedWindows
 }
