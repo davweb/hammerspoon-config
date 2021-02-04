@@ -102,8 +102,8 @@ local keymap = {
   U = text.type('↑'),
   X = text.type('×'),
   H = text.type('½'),
-  K = text.type('✔')
-
+  K = text.type('✔'),
+  B = windows.bypassedWindows
 }
 
 for key, func in pairs(keymap) do
