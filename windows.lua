@@ -195,11 +195,54 @@ local function tidy(force)
   end
 end
 
+local function moveWindowSpace(moveLeft)
+  local currentWindow = hs.window.focusedWindow()
+  local currentSpaces = currentWindow:spaces()
+  local currentSpace = currentSpaces[1]
+  local currentScreen = currentWindow:screen()
+  local currentScreenName = currentScreen:name()
+  local currentMonitorName = monitorName(currentScreen)
+  local monitors = monitorInfo()
+  local currentMonitor = monitors[currentMonitorName]
+
+  local previousSpace
+
+  for _, space in pairs(currentMonitor.spaces) do
+    local newSpace
+
+    if moveLeft and space == currentSpace then
+      newSpace = previousSpace
+    end
+
+    if not moveleft and previousSpace == currentSpace then
+      newSpace = space
+    end
+
+    if newSpace ~= nil then
+      currentWindow:spacesMoveTo(newSpace)
+      spaces.changeToSpace(newSpace)
+      return
+    end
+
+    previousSpace = space
+  end
+end
+
+local function moveWindowLeftOneSpace()
+  moveWindowSpace(true)
+end
+
+local function moveWindowRightOneSpace()
+  moveWindowSpace(false)
+end
+
 return {
   addCategory = addCategory,
   addMonitor = addMonitor,
   identify = identifyWindow,
   identifyScreens = identifyScreens,
   tidy = tidy,
-  bypassedWindows = bypassedWindows
+  bypassedWindows = bypassedWindows,
+  moveWindowLeftOneSpace = moveWindowLeftOneSpace,
+  moveWindowRightOneSpace = moveWindowRightOneSpace
 }
