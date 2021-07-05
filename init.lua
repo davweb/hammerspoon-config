@@ -103,7 +103,9 @@ local keymap = {
   X = text.type('×'),
   H = text.type('½'),
   K = text.type('✔'),
-  B = windows.bypassedWindows
+  B = windows.bypassedWindows,
+  J = windows.moveWindowLeftOneSpace,
+  K = windows.moveWindowRightOneSpace
 }
 
 for key, func in pairs(keymap) do
