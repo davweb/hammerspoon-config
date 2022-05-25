@@ -5,6 +5,7 @@ local windows = require('windows')
 local text = require('text')
 require('keyboard')
 require('power')
+require('network')
 -- require('do-not-disturb')
 
 windows.addCategory('terminals', {
@@ -92,7 +93,6 @@ windows.addMonitor('Color LCD', {
 
 local keymap = {
   C = hs.toggleConsole,
-  -- L = network.swapLocation,
   W = windows.tidy(false),
   F = windows.tidy(true),
   I = windows.identify,
