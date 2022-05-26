@@ -1,7 +1,5 @@
 -- luacheck: globals hs
 
-local formatter = require("formatter")
-
 -- Get the device name for a Service name
 local function getDeviceForService(serviceName)
     local network = hs.network.configuration.open()
@@ -29,6 +27,7 @@ local function monitorService(serviceName)
     -- right IP address
     local timer = hs.timer.delayed.new(10, function()
         print("Running AppleScript")
+        -- This needs a be a text .applescript and *not* a compiled .scpt file
         hs.osascript.applescriptFromFile('/Users/dwebb/Library/Scripts/EthernetDockEnabler.applescript')
     end)
 
@@ -58,5 +57,6 @@ local function monitorService(serviceName)
     return networkStore
 end
 
+-- Monitor the named service
 -- Store the monitored container in a global so things don't get Garbage collected
 store = monitorService("Office Dock")

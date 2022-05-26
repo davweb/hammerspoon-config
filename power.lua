@@ -40,10 +40,8 @@ end
 
 local function sessionChanged(event)
     if event == hs.caffeinate.watcher.systemDidWake then
-        if hs.wifi.currentNetwork() ~= "TAMG" and hs.wifi.currentNetwork() ~= "ta" then
-            print "Closing work Apps"
-            killApp("Signal")
-        end
+        print("System Woke")
+        -- Nothing currently
     end
 end
 
