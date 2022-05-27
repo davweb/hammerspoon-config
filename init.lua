@@ -9,45 +9,56 @@ require('network')
 -- require('do-not-disturb')
 
 windows.addCategory('terminals', {
-  'iTerm2'
+  'iTerm2',
+  'System Preferences',
+  'App Store',
+  'Finder',
+  'Preview',
+  'PDF Expert',
+  'Hazel'
 })
 windows.addCategory('browsers', {
   'Google Chrome',
   'Firefox',
   'Safari',
-  '1Password 7'
+  '1Password'
 })
 windows.addCategory('personal', {
   'Spark',
   'Messages',
   'Deliveries',
-  'Tweetbot',
   'WhatsApp',
-  'Signal'
+  'Signal',
+  'Parcel',
+  'Reeder'
+})
+windows.addCategory('social', {
+  'Tweetbot',
+  'Board Game Arena'
 })
 windows.addCategory('messages', {
-  'Microsoft Outlook',
-  'Microsoft OneNote',
-  'Things',
   'Contacts',
-  'Slack'
+  'Slack',
+  'GoodNotes'
 })
 windows.addCategory('calendars', {
   'Calendar',
-  'Fantastical'
+  'Fantastical',
+  'Microsoft Outlook',
+  'Things'
 })
 windows.addCategory('devtools', {
-  'Azure Data Studio',
-  'Sourcetree',
-  'Sequel Pro',
-  'MySQLWorkbench',
   'Hammerspoon',
-  'GitHub Desktop',
-  'Tower'
+  'Tower',
+  'Dash'
 })
 windows.addCategory('editors', {
   'Code',
-  'Soulver'
+  'Soulver 3',
+  'Tot',
+  'MacDown',
+  'Dictionary',
+  'Text Edit'
 })
 windows.addCategory('media', {
   'Spotify',
@@ -56,28 +67,38 @@ windows.addCategory('media', {
   'iPlayer Radio'
 })
 windows.addCategory('conferencing', {
-  'BlueJeans'
+  'Microsoft Teams'
 })
 
 
 -- Work Monitors
 -- windows.addMonitor('DELL U2715H', {
---   editors = 1,
---   messages = 2
+--   terminals = 1,
+--   editors = 2,
+--   social = -3,
+--   personal = -2,
+--   media = -1
 -- })
+-- windows.addMonitor('LG Ultra HD', {
+--   messages = 1,
+--   calendars = 2,
+--   devtools = 4,
+--   browsers = 5,
+--   conferencing = 6
+-- })
+
 -- Home Monitor
-windows.addMonitor('DELL U2719DC', {
+windows.addMonitor('PHL BDM4065', {
   terminals = 1,
   browsers = 2,
-  conferencing = 3,
+  messages = 3,
+  devtools = 4,
+  editors = 5,
+  calendars = 6,
+  conferencing = 7,
+  social = 3,
   personal = -2,
   media = -1
-})
-windows.addMonitor('LG Ultra HD', {
-  messages = 1,
-  calendars = 2,
-  editors = 3,
-  devtools = 4
 })
 
 -- Laptop
@@ -87,6 +108,9 @@ windows.addMonitor('Color LCD', {
   messages = 3,
   devtools = 4,
   editors = 5,
+  calendars = 6,
+  conferencing = 7,
+  social = 3,
   personal = -2,
   media = -1
 })
