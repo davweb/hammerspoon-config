@@ -1,4 +1,4 @@
--- luacheck: globals hs
+-- luacheck: globals hs store
 
 -- Get the device name for a Service name
 local function getDeviceForService(serviceName)
@@ -36,10 +36,10 @@ local function monitorService(serviceName)
     local networkStore = network:monitorKeys(interfacePath, true)
 
     -- Listen to IPv4 state changes, starting the timer if we have a self-assigned IP address
-    networkStore:setCallback(function (store, keys)
+    networkStore:setCallback(function (_, _)
         -- Get the first IPv4 address for the device
         local details = hs.network.interfaceDetails(deviceName)
-        ipAddress = details.IPv4 and details.IPv4.Addresses[1] or nil
+        local ipAddress = details.IPv4 and details.IPv4.Addresses[1] or nil
 
         if ipAddress == nil then
             timer:stop()

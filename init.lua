@@ -126,8 +126,7 @@ local keymap = {
   U = text.type('↑'),
   X = text.type('×'),
   H = text.type('½'),
-  K = text.type('✔'),
-  B = windows.bypassedWindows,
+  Y = text.type('✔'),
   J = windows.moveWindowLeftOneSpace,
   K = windows.moveWindowRightOneSpace
 }
