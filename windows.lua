@@ -227,7 +227,6 @@ return {
   identify = identifyWindow,
   identifyScreens = identifyScreens,
   tidy = tidy,
-  -- bypassedWindows = bypassedWindows,
   moveWindowLeftOneSpace = moveWindowLeftOneSpace,
   moveWindowRightOneSpace = moveWindowRightOneSpace
 }
