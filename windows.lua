@@ -1,37 +1,24 @@
 -- luacheck: globals hs
 
-require('app-filters')
-local spaces = require("hs._asm.undocumented.spaces")
-local appFilter = require("app-filters")
 local contains = hs.fnutils.contains
-local filter = hs.fnutils.filter
 
 -- local config
 local appConfig = {}
 local monitorConfig = {}
 
+-- Create filter and keep it active without subscribers
+local windowFilter = hs.window.filter.new():setOverrideFilter({visible=true, fullscreen=false}):keepActive()
+
 local function addCategory(category, apps)
   for _, appName in ipairs(apps) do
     appConfig[appName] = category
-
-    -- initalise window filters
-    appFilter.get(appName)
   end
 
   return category
 end
 
 local function addMonitor(name, monitorCategories)
-  local monitorData = {}
-  monitorData.name = name
-  monitorData.categories = monitorCategories
-  table.insert(monitorConfig, monitorData)
-end
-
--- returns true if the specified screen is not a fullscreen app
-local function notFullScreen(s)
-  local windowState = spaces.spaceType(s)
-  return not (windowState == spaces.types.fullscreen or windowState == spaces.types.tiled)
+  monitorConfig[name] = monitorCategories
 end
 
 -- workaround for iPad via Sidecar not having a name
@@ -65,42 +52,48 @@ local function identifyWindow()
   hs.alert.show(name)
 end
 
-local function screensByUuid()
-  local map = {}
+-- For an category name return the destination display and space
+-- Returns a map contained display name, screenId and space
+local function categoryHome(categoryId)
+  local allScreens = hs.screen.allScreens()
 
-  for _, screen in pairs(hs.screen.allScreens()) do
-    local uuid = screen:spacesUUID()
-    map[uuid] = screen
+  for _, screen in ipairs(allScreens) do
+    local name = monitorName(screen)
+    local categoryMap = monitorConfig[name]
+
+    if categoryMap == nil then
+      print("No configuration for monitor " .. name)
+    else
+      local spaceIndex = categoryMap[categoryId]
+
+      if spaceIndex ~= nil then
+        local destination = {}
+        destination.displayName = name
+        destination.screenId = screen:id()
+        destination.spaceIndex = spaceIndex
+        return destination
+      end
+
+    end
+
   end
 
-  return map
+  print("No destination found for category " .. categoryId)
+  return nil
 end
 
--- I'm calling a monitor a combination of a screen and its spaces
-local function monitorInfo()
-  local screensMap = screensByUuid()
-  local monitors = {}
+-- For an app name return the destination display and space
+local function appHome(appName)
+  local category = appConfig[appName]
 
-  -- Uses spaces.layout() as it returns spaces in order
-  for uuid, spacesList in pairs(spaces.layout()) do
-    local screen = screensMap[uuid]
-    local monitor = {}
-    monitor.spaces = filter(spacesList, notFullScreen)
-    monitor.screen = screen
-    monitors[monitorName(screen)] = monitor
+  if category == nil then
+    print("No Window category for " .. appName)
+    return nil
+  else
+    return
+     categoryHome(category)
   end
 
-  return monitors
-end
-
-local function copyOfAppConfig()
-  local copy = {}
-
-  for appName, appCategory in pairs(appConfig) do
-      copy[appName] = appCategory
-  end
-
-  return copy
 end
 
 -- check the desired destination against the number of spaces
@@ -121,72 +114,63 @@ local function checkDestination(destination, numberOfSpaces)
   return destination
 end
 
-local function bypassedWindows()
-  local runningApps = {}
-  
-  for i, app in pairs(hs.application.runningApplications()) do
-    if app:kind() == 1 then
-      runningApps[app:name()] = 'running'
+-- Get the space Id from a screen Id and and index in the list of space
+local function getSpaceId(screenId, spaceIndex)
+  local spaces = hs.spaces.spacesForScreen(screenId)
+  local filteredSpaces = {}
+
+  -- Remove full screen windows etc
+  for _, spaceId in ipairs(spaces) do
+    if hs.spaces.spaceType(spaceId) == 'user' then
+      table.insert(filteredSpaces, spaceId)
     end
   end
 
-  for appName, appCategory in pairs(appConfig) do
-    runningApps[appName] = nil
-  end
-
-  for appName, _ in pairs(runningApps) do
-    print(appName)
-  end
+  spaceIndex = checkDestination(spaceIndex, #filteredSpaces)
+  return filteredSpaces[spaceIndex]
 end
 
 local function tidyWindows(alwaysArrange)
-  local monitors = monitorInfo()
-  -- We copy the appConfig so we can delete the apps we've processed 
-  local appConfigCopy = copyOfAppConfig()
+  -- Sort by focused ascending so currently focused window will end up on the
+  -- top of a stack
+  local allWindows = windowFilter:getWindows(hs.window.filter.sortByFocused)
+  local spacePoints = {}
 
-  -- Loop over monitors in order
-  for _, monitorData in ipairs(monitorConfig) do
-    local monitorName = monitorData.name
-    local monitorCategories = monitorData.categories
-    local monitor = monitors[monitorName]
+  for _, window in ipairs(allWindows) do
+    local appName = window:application():name()
+    local destination = appHome(appName)
 
-    if monitor ~= nil then
-      local rect = monitor.screen:frame()
-      local screenPoints = {}
+    if destination ~= nil then
+      local spaceId = getSpaceId(destination.screenId, destination.spaceIndex)
+      local moved = false
 
-      -- Loop over apps to see if they should move to this window
-      for appName, appCategory in pairs(appConfigCopy) do
-        local destination = monitorCategories[appCategory]
-
-        if destination ~= nil then
-          destination = checkDestination(destination, #monitor.spaces)
-          appConfigCopy[appName] = nil
-
-          local spaceId = monitor.spaces[destination]
-          local localFilter = appFilter.get(appName)
-
-          -- Loop over windows for app
-          for _, window in pairs(localFilter:getWindows()) do
-            if (alwaysArrange or not contains(window:spaces(), spaceId)) and not window:isFullScreen() then
-              local point = screenPoints[spaceId]
-
-              if (point == nil) then
-                point = hs.geometry.point(rect.x + 25, rect.y + 25)
-                screenPoints[spaceId] = point
-              end
-
-              window:spacesMoveTo(spaceId)
-              window:setTopLeft(point)
-              window:raise()
-
-              point.x = point.x + 50
-              point.y = point.y + 50
-            end
-          end
-        end
+      -- Move the window to the correct space
+      if not contains(hs.spaces.windowSpaces(window), spaceId) then
+        hs.spaces.moveWindowToSpace(window, spaceId)
+        moved = true
       end
+
+      -- arrange the windows in the space
+      if alwaysArrange or moved then
+        local point = spacePoints[spaceId]
+
+        if (point == nil) then
+          local rect = hs.screen.find(destination.screenId):frame()
+          point = hs.geometry.point(rect.x + 25, rect.y + 25)
+          spacePoints[spaceId] = point
+        end
+
+        window:setTopLeft(point)
+        window:raise()
+
+        point.x = point.x + 50
+        point.y = point.y + 50
+      end
+
     end
+
   end
+
 end
 
 local function tidy(force)
@@ -197,35 +181,36 @@ end
 
 local function moveWindowSpace(moveLeft)
   local currentWindow = hs.window.focusedWindow()
-  local currentSpaces = currentWindow:spaces()
-  local currentSpace = currentSpaces[1]
-  local currentScreen = currentWindow:screen()
-  local currentScreenName = currentScreen:name()
-  local currentMonitorName = monitorName(currentScreen)
-  local monitors = monitorInfo()
-  local currentMonitor = monitors[currentMonitorName]
+  local currentSpace = hs.spaces.windowSpaces(currentWindow)[1]
+  local monitorSpaces = hs.spaces.spacesForScreen()
 
   local previousSpace
 
-  for _, space in pairs(currentMonitor.spaces) do
+  for _, space in pairs(monitorSpaces) do
     local newSpace
 
-    if moveLeft and space == currentSpace then
-      newSpace = previousSpace
+    -- Ignore full screen window spaces
+    if hs.spaces.spaceType(space) == 'user' then
+
+      if moveLeft and space == currentSpace then
+        newSpace = previousSpace
+      end
+
+      if not moveLeft and previousSpace == currentSpace then
+        newSpace = space
+      end
+
+      if newSpace ~= nil then
+        hs.spaces.moveWindowToSpace(currentWindow, newSpace)
+        currentWindow:focus()
+        return
+      end
+
+      previousSpace = space
     end
 
-    if not moveleft and previousSpace == currentSpace then
-      newSpace = space
-    end
-
-    if newSpace ~= nil then
-      currentWindow:spacesMoveTo(newSpace)
-      spaces.changeToSpace(newSpace)
-      return
-    end
-
-    previousSpace = space
   end
+
 end
 
 local function moveWindowLeftOneSpace()
@@ -242,7 +227,7 @@ return {
   identify = identifyWindow,
   identifyScreens = identifyScreens,
   tidy = tidy,
-  bypassedWindows = bypassedWindows,
+  -- bypassedWindows = bypassedWindows,
   moveWindowLeftOneSpace = moveWindowLeftOneSpace,
   moveWindowRightOneSpace = moveWindowRightOneSpace
 }
