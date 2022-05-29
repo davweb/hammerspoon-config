@@ -1,11 +1,11 @@
 -- luacheck: globals hs
 
-require('config-watcher')
 local windows = require('windows')
 local text = require('text')
 require('keyboard')
 require('power')
 require('network')
+require('config-watcher')
 -- require('do-not-disturb')
 
 windows.addCategory('terminals', {

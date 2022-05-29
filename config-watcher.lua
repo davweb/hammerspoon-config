@@ -24,8 +24,8 @@ local function fileModified(changes)
 end
 
 local function reloadConfig(paths, changes)
-  for _, file in pairs(paths) do
-    if fileModified(changes[_]) and file:sub(-4) == ".lua" then
+  for index, file in ipairs(paths) do
+    if fileModified(changes[index]) and file:sub(-4) == ".lua" then
         hs.reload()
         return
     end

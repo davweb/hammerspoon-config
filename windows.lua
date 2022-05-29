@@ -117,14 +117,11 @@ end
 -- Get the space Id from a screen Id and and index in the list of space
 local function getSpaceId(screenId, spaceIndex)
   local spaces = hs.spaces.spacesForScreen(screenId)
-  local filteredSpaces = {}
 
   -- Remove full screen windows etc
-  for _, spaceId in ipairs(spaces) do
-    if hs.spaces.spaceType(spaceId) == 'user' then
-      table.insert(filteredSpaces, spaceId)
-    end
-  end
+  local filteredSpaces = hs.fnutils.ifilter(spaces, function(spaceId)
+    return hs.spaces.spaceType(spaceId) == 'user'
+  end)
 
   spaceIndex = checkDestination(spaceIndex, #filteredSpaces)
   return filteredSpaces[spaceIndex]

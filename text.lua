@@ -20,7 +20,7 @@ local function pasteText(text)
     paste()
 
     -- workaround to ensure we don't put the old clipboard contents back before the paste happens
-    hs.timer.doAfter(0.1, function ()
+    hs.timer.doAfter(0.1, function()
       hs.pasteboard.setContents(oldContents)
     end)
   end
