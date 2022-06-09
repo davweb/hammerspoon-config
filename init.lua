@@ -128,7 +128,8 @@ local keymap = {
   H = text.type('½'),
   Y = text.type('✔'),
   J = windows.moveWindowLeftOneSpace,
-  K = windows.moveWindowRightOneSpace
+  K = windows.moveWindowRightOneSpace,
+  G = windows.gatherWindows
 }
 
 for key, func in pairs(keymap) do

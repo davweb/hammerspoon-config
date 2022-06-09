@@ -218,6 +218,23 @@ local function moveWindowRightOneSpace()
   moveWindowSpace(false)
 end
 
+-- Bring all windows of the focussed app to the current space
+local function gatherWindows()
+  local focusedWindow = hs.window.focusedWindow()
+  local focusedApplicationName = focusedWindow:application():name()
+  local focusedSpaceId = hs.spaces.focusedSpace()
+  local allWindows = windowFilter:getWindows(hs.window.filter.sortByFocused)
+
+  for _, window in ipairs(allWindows) do
+    local appName = window:application():name()
+    local appSpaces = hs.spaces.windowSpaces(window)
+
+    if appName == focusedApplicationName and not contains(appSpaces, focusedSpaceId) then
+      hs.spaces.moveWindowToSpace(window, focusedSpaceId)
+    end
+  end
+end
+
 return {
   addCategory = addCategory,
   addMonitor = addMonitor,
@@ -225,5 +242,6 @@ return {
   identifyScreens = identifyScreens,
   tidy = tidy,
   moveWindowLeftOneSpace = moveWindowLeftOneSpace,
-  moveWindowRightOneSpace = moveWindowRightOneSpace
+  moveWindowRightOneSpace = moveWindowRightOneSpace,
+  gatherWindows = gatherWindows
 }
