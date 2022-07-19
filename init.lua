@@ -88,7 +88,7 @@ windows.addCategory('conferencing', {
 -- })
 
 -- Home Monitor
-windows.addMonitor('PHL BDM4065', {
+windows.addMonitor('Studio Display', {
   terminals = 1,
   browsers = 2,
   messages = 3,

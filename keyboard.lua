@@ -3,7 +3,7 @@
 local types = hs.eventtap.event.types
 local audioApps = {"Spotify", "VLC", "Overcast", "BBC Sounds"}
 
--- Window filter for audio apps that we'll keep running without any filters
+-- Window filter for audio apps that we'll keep running without any listeners
 local windowFilter = hs.window.filter.new(audioApps):keepActive()
 
 local function launchSpotify()
@@ -28,7 +28,7 @@ local function handlePlay(down)
   return true
 end
 
-local function handleKey(key, down, flags)
+local function handleKey(key, down)
   if key == 'PLAY' then
     return handlePlay(down)
   end
@@ -49,7 +49,7 @@ local function keyPressed(event)
     local data = event:systemKey()
 
     if data.key ~= nil and data.down ~= nil then
-      return handleKey(data.key, data.down, event:getFlags())
+      return handleKey(data.key, data.down)
     end
   end
 
