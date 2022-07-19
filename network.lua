@@ -18,39 +18,68 @@ local function getDeviceForService(serviceName)
     return nil
 end
 
+-- Return true if the device has a self-assigned IP address
+local function hasSelfAssignedIPAddress(deviceName)
+    -- Get the first IPv4 address for the device
+    local details = hs.network.interfaceDetails(deviceName)
+    local ipAddress = details.IPv4 and details.IPv4.Addresses[1] or nil
+
+    -- If we have no IP address then we're disconnected which is OK
+    if ipAddress == nil then
+        print(deviceName .. " has no IP Address")
+        return false
+    -- If we have 169.254.x.x address that's bad
+    elseif ipAddress:find('169.254.', 1, true) == 1 then
+        print(deviceName .. " has the self-assigned IP Address " .. ipAddress)
+        return true
+    -- If have an "ordinary" IP address that's OK
+    else
+        print(deviceName .. " has the IP Address " .. ipAddress)
+        return false
+    end
+end
+
+-- Run the AppleScript which clicks Disconnect and then Connect on the network panel
+local function reconnectNetwork()
+    print("Running AppleScript to reconnect network")
+    -- This needs a be a text .applescript and *not* a compiled .scpt file
+    hs.osascript.applescriptFromFile('/Users/dwebb/Library/Scripts/EthernetDockEnabler.applescript')
+end
+
 -- Start a monitor to listen to service changes
 local function monitorService(serviceName)
     local deviceName = getDeviceForService(serviceName)
 
+    if deviceName == nil then
+        print("Could not find service ", serviceName)
+        return
+    end
+
     -- Create a timer that will run the AppleScript when required after 10
     -- seconds in case connection is working but takes a few seconds to get the
     -- right IP address
-    local timer = hs.timer.delayed.new(10, function()
-        print("Running AppleScript")
-        -- This needs a be a text .applescript and *not* a compiled .scpt file
-        hs.osascript.applescriptFromFile('/Users/dwebb/Library/Scripts/EthernetDockEnabler.applescript')
+    local tries = 0
+    local timer
+
+    timer = hs.timer.delayed.new(10, function()
+        if hasSelfAssignedIPAddress(deviceName) then
+            reconnectNetwork()
+            tries = tries + 1
+
+            if tries < 4 then
+                timer:start()
+            end
+        end
     end)
 
     local interfacePath = "State:/Network/Interface/" .. deviceName .. "/IPv4"
     local network = hs.network.configuration.open()
     local networkStore = network:monitorKeys(interfacePath, true)
 
-    -- Listen to IPv4 state changes, starting the timer if we have a self-assigned IP address
+    -- Listen to IPv4 state changes, restarting the timer and retry count on each change
     networkStore:setCallback(function (_, _)
-        -- Get the first IPv4 address for the device
-        local details = hs.network.interfaceDetails(deviceName)
-        local ipAddress = details.IPv4 and details.IPv4.Addresses[1] or nil
-
-        if ipAddress == nil then
-            timer:stop()
-            print("No Address")
-        elseif ipAddress:find('169.254.', 1, true) == 1 then
-            timer:start()
-            print("Bad Address: ", ipAddress)
-        else
-            timer:stop()
-            print("Good Address: ", ipAddress)
-        end
+        tries = 0
+        timer:start()
     end)
 
     networkStore:start()
