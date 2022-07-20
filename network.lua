@@ -1,5 +1,9 @@
 -- luacheck: globals hs store
 
+local file = io.open("reconnectNetwork.applescript", "r")
+local appleScript = file:read("*all")
+file:close()
+
 -- Get the device name for a Service name
 local function getDeviceForService(serviceName)
     local network = hs.network.configuration.open()
@@ -32,7 +36,7 @@ local function hasSelfAssignedIPAddress(deviceName)
     elseif ipAddress:find('169.254.', 1, true) == 1 then
         print(deviceName .. " has the self-assigned IP Address " .. ipAddress)
         return true
-    -- If have an "ordinary" IP address that's OK
+    -- If we have an "ordinary" IP address that's OK
     else
         print(deviceName .. " has the IP Address " .. ipAddress)
         return false
@@ -40,10 +44,10 @@ local function hasSelfAssignedIPAddress(deviceName)
 end
 
 -- Run the AppleScript which clicks Disconnect and then Connect on the network panel
-local function reconnectNetwork()
+local function reconnectNetwork(serviceName)
     print("Running AppleScript to reconnect network")
-    -- This needs a be a text .applescript and *not* a compiled .scpt file
-    hs.osascript.applescriptFromFile('/Users/dwebb/Library/Scripts/EthernetDockEnabler.applescript')
+    local specificAppleScript = 'set interfaceName to "' .. serviceName .. '"\n' .. appleScript
+    hs.osascript.applescript(specificAppleScript)
 end
 
 -- Start a monitor to listen to service changes
@@ -63,7 +67,7 @@ local function monitorService(serviceName)
 
     timer = hs.timer.delayed.new(10, function()
         if hasSelfAssignedIPAddress(deviceName) then
-            reconnectNetwork()
+            reconnectNetwork(serviceName)
             tries = tries + 1
 
             if tries < 4 then
