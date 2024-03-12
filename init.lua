@@ -4,9 +4,9 @@
 hs.console.consoleFont("Source Code Pro")
 
 require('config-watcher')
-local windows = require('windows')
-local text = require('text')
 require('keyboard')
+local windows = require('windows')
+-- local text = require('text')
 require('power')
 require('network')
 -- require('do-not-disturb')
@@ -120,21 +120,27 @@ windows.addMonitor('Color LCD', {
 })
 
 local keymap = {
+  -- V - Clipboard History
+  -- D - Toggle Do Not Disturb
   C = hs.toggleConsole,
+  E = hs.console.clearConsole,
   W = windows.tidy(false),
   F = windows.tidy(true),
   I = windows.identify,
   S = windows.identifyScreens,
-  T = text.type('▶'),
-  A = text.paste('➝'),
-  U = text.type('↑'),
-  X = text.type('×'),
-  H = text.type('½'),
-  Y = text.type('✔'),
   J = windows.moveWindowLeftOneSpace,
   K = windows.moveWindowRightOneSpace,
   G = windows.gatherWindows,
   A = audio.displayAudioDevices,
+
+  -- Replaced by Keybaord Maestro Macros
+  -- T = text.type('▶'), ;
+  -- A = text.paste('➝'),
+  -- U = text.type('↑'),
+  -- X = text.type('×'),
+  -- H = text.type('½'),
+  -- Y = text.type('✔'),
+  -- N = text.type('✘'),
 }
 
 for key, func in pairs(keymap) do
