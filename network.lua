@@ -59,15 +59,15 @@ local function monitorService(serviceName)
         return
     end
 
-    -- Create a timer that will run the AppleScript when required after 10
+    -- Create a timer that will run the AppleScript when required after 15
     -- seconds in case connection is working but takes a few seconds to get the
     -- right IP address
     local tries = 0
     local timer
 
-    timer = hs.timer.delayed.new(10, function()
+    timer = hs.timer.delayed.new(15, function()
         if hasSelfAssignedIPAddress(deviceName) then
-            reconnectNetwork(serviceName)
+            networkReset.reconnectNetwork(serviceName)
             tries = tries + 1
 
             if tries < 4 then
