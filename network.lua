@@ -87,6 +87,10 @@ local function monitorService(serviceName)
     end)
 
     networkStore:start()
+
+    -- start the timer now in case we already have a self-assinged IP addess
+    timer:start()
+
     return networkStore
 end
 
