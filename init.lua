@@ -10,6 +10,7 @@ require('keyboard')
 require('power')
 require('network')
 -- require('do-not-disturb')
+local audio = require('audio')
 
 windows.addCategory('terminals', {
   'iTerm2',
@@ -132,7 +133,8 @@ local keymap = {
   Y = text.type('✔'),
   J = windows.moveWindowLeftOneSpace,
   K = windows.moveWindowRightOneSpace,
-  G = windows.gatherWindows
+  G = windows.gatherWindows,
+  A = audio.displayAudioDevices,
 }
 
 for key, func in pairs(keymap) do
