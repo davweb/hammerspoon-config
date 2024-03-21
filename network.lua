@@ -1,5 +1,7 @@
 -- luacheck: globals hs store
 
+local networkReset = require('network-reset')
+
 local file = io.open("reconnectNetwork.applescript", "r")
 local appleScript = file:read("*all")
 file:close()
@@ -43,23 +45,16 @@ local function hasSelfAssignedIPAddress(deviceName)
     end
 end
 
--- Run the AppleScript which clicks Disconnect and then Connect on the network panel
-local function reconnectNetwork(serviceName)
-    print("Running AppleScript to reconnect network")
-    local specificAppleScript = 'set interfaceName to "' .. serviceName .. '"\n' .. appleScript
-    hs.osascript.applescript(specificAppleScript)
-end
-
 -- Start a monitor to listen to service changes
 local function monitorService(serviceName)
     local deviceName = getDeviceForService(serviceName)
 
     if deviceName == nil then
-        print("Could not find service ", serviceName)
+        print("Could not find service '" .. serviceName .. "'")
         return
     end
 
-    -- Create a timer that will run the AppleScript when required after 15
+    -- Create a timer that will reset the connection when required after 15
     -- seconds in case connection is working but takes a few seconds to get the
     -- right IP address
     local tries = 0

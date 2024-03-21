@@ -11,6 +11,7 @@ require('power')
 require('network')
 -- require('do-not-disturb')
 local audio = require('audio')
+local nr = require('network-reset')
 
 windows.addCategory('terminals', {
   'iTerm2',
@@ -76,20 +77,20 @@ windows.addCategory('conferencing', {
 
 
 -- Work Monitors
--- windows.addMonitor('DELL U2715H', {
---   terminals = 1,
---   editors = 2,
---   social = -3,
---   personal = -2,
---   media = -1
--- })
--- windows.addMonitor('LG Ultra HD', {
---   messages = 1,
---   calendars = 2,
---   devtools = 4,
---   browsers = 5,
---   conferencing = 6
--- })
+windows.addMonitor('DELL U2715H', {
+  terminals = 1,
+  editors = 2,
+  social = -3,
+  personal = -2,
+  media = -1
+})
+windows.addMonitor('S27H85x', {
+  messages = 1,
+  calendars = 2,
+  devtools = 4,
+  browsers = 5,
+  conferencing = 6
+})
 
 -- Home Monitor
 windows.addMonitor('Studio Display', {
@@ -119,9 +120,17 @@ windows.addMonitor('Color LCD', {
   media = -1
 })
 
+local function test()
+  print("--- Start Test ---")
+  nr.reconnectNetwork('Office Dock')
+  print("--- End Test ---")
+end
+
 local keymap = {
+  -- Bound in other apps
   -- V - Clipboard History
   -- D - Toggle Do Not Disturb
+
   C = hs.toggleConsole,
   E = hs.console.clearConsole,
   W = windows.tidy(false),
@@ -132,6 +141,7 @@ local keymap = {
   K = windows.moveWindowRightOneSpace,
   G = windows.gatherWindows,
   A = audio.displayAudioDevices,
+  U = test
 
   -- Replaced by Keybaord Maestro Macros
   -- T = text.type('▶'), ;

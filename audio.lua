@@ -20,7 +20,7 @@ local function displayAudioDevices()
 end
 
 local function deviceChanged(change)
-    -- Space in string in intentional
+    -- Trailing space in "dIn " string is intentional
     if change == "dIn " then
         local input = hs.audiodevice.current(true)
         print("Default input audio device changed to " .. input['name'])
