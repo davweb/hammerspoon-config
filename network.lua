@@ -2,10 +2,6 @@
 
 local networkReset = require('network-reset')
 
-local file = io.open("reconnectNetwork.applescript", "r")
-local appleScript = file:read("*all")
-file:close()
-
 -- Get the device name for a Service name
 local function getDeviceForService(serviceName)
     local network = hs.network.configuration.open()
