@@ -1,6 +1,6 @@
 -- luacheck: globals hs watcher
 
-local preferences = require('preferences')
+local preferences = require("preferences")
 
 local getNotDisturbEnabled = preferences.getPreference("notificationcenterui", "doNotDisturb")
 
@@ -11,7 +11,7 @@ local function setDoNotDisturbEnabled(enabled)
 
     if enabled ~= current then
         hs.eventtap.keyStroke({"ctrl", "alt", "cmd"}, "d")
-        hs.alert.show('Do Not Disturb is ' .. (enabled and 'On' or 'Off'))
+        hs.alert.show("Do Not Disturb is " .. (enabled and "On" or "Off"))
     end
 end
 

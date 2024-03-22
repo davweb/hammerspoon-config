@@ -22,9 +22,9 @@ local function batteryPower()
 end
 
 local function powerChanged()
-    if powerSource == 'AC Power' then
+    if powerSource == "AC Power" then
         mainsPower()
-    elseif powerSource == 'Battery Power' then
+    elseif powerSource == "Battery Power" then
         batteryPower()
     end
 end

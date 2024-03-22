@@ -27,7 +27,7 @@ local function monitorName(screen)
 
   -- this may not be true for all cases where name is nil but works for me
   if name == nil then
-    name = 'iPad'
+    name = "iPad"
   end
 
   return name
@@ -35,11 +35,11 @@ end
 
 -- display a pop-up on each monitor with its name
 local function identifyScreens()
-  local names = 'Monitors:'
+  local names = "Monitors:"
   for _, screen in ipairs(hs.screen.allScreens()) do
     local name = monitorName(screen)
     hs.alert.show(name, {}, screen)
-    names = names .. ' ' .. name
+    names = names .. " " .. name
   end
 
   hs.pasteboard.setContents(names)
@@ -120,7 +120,7 @@ local function getSpaceId(screenId, spaceIndex)
 
   -- Remove full screen windows etc
   local filteredSpaces = hs.fnutils.ifilter(spaces, function(spaceId)
-    return hs.spaces.spaceType(spaceId) == 'user'
+    return hs.spaces.spaceType(spaceId) == "user"
   end)
 
   spaceIndex = checkDestination(spaceIndex, #filteredSpaces)
@@ -187,7 +187,7 @@ local function moveWindowSpace(moveLeft)
     local newSpace
 
     -- Ignore full screen window spaces
-    if hs.spaces.spaceType(space) == 'user' then
+    if hs.spaces.spaceType(space) == "user" then
 
       if moveLeft and space == currentSpace then
         newSpace = previousSpace

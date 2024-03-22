@@ -29,7 +29,7 @@ local function handlePlay(down)
 end
 
 local function handleKey(key, down)
-  if key == 'PLAY' then
+  if key == "PLAY" then
     return handlePlay(down)
   end
 

@@ -2,7 +2,7 @@ local findIntervalSecs = 0.25;
 local maximumWaitSecs = 5;
 
 local function find(searchFunction, callbackFunction, durationSecs)
-    print('durationSecs', durationSecs)
+    print("durationSecs", durationSecs)
 
     if durationSecs > maximumWaitSecs then
         callbackFunction(nil)
@@ -48,7 +48,7 @@ local function openApplication(appName, callbackFunction)
 
 end
 
-local function clickByLabel(rootElement, buttonLabels, callbackFunction)
+local function clickLabels(rootElement, buttonLabels, callbackFunction)
     local labelText
     local mousePosition
 
@@ -57,19 +57,16 @@ local function clickByLabel(rootElement, buttonLabels, callbackFunction)
             return true
         end
 
-        if item.__name == 'hs.axuielement' then
-            itemLabel  = item:attributeValue('AXAttributedDescription')
-
-            if itemLabel ~= nil and itemLabel:getString() == labelText then
-                return true
-            end
+        if item.__name == "hs.axuielement" then
+            itemLabel  = item:attributeValue("AXAttributedDescription")
+            return itemLabel ~= nil and itemLabel:getString() == labelText
         end
 
         return false
     end
 
     function searchCallback(msg, results, count)
-        if msg == 'countReached' and count == 1 then
+        if msg == "countReached" and count == 1 then
             local button = results[1]
 
             -- The SwiftUI elements don't all resond to perfßormAction() so we
@@ -85,7 +82,7 @@ local function clickByLabel(rootElement, buttonLabels, callbackFunction)
                 hs.timer.doAfter(1, callbackFunction)
             end
         else
-            print('Element with label "' .. labelText .. '" button not found')
+            print("Element with label '" .. labelText .. "' not found")
         end
     end
 
@@ -107,21 +104,21 @@ local function reconnectNetwork(serviceName)
     end
 
     function resetConnection()
-        clickByLabel(rootElement, {'Details…', '802.1X', 'Disconnect', 'Connect', 'OK'}, closeSystemPreferences)
+        clickLabels(rootElement, {"Details…", "802.1X", "Disconnect", "Connect", "OK"}, closeSystemPreferences)
     end
 
     function selectServiceCallback(msg, results, count)
-      if msg == 'countReached' then
+      if msg == "countReached" then
           local listItem = results[1]
           listItem:performAction("AXPress")
           hs.timer.doAfter(1, resetConnection)
       else
-          print('Service ' .. serviceName .. ' not found in Network settings')
+          print("Service " .. serviceName .. " not found in Network settings")
       end
     end
 
     function selectService()
-        local listLabel = serviceName .. ';'
+        local listLabel = serviceName .. ";"
 
         rootElement:elementSearch(selectServiceCallback, function (item)
             itemId = item:attributeValue("AXIdentifier")
@@ -147,7 +144,7 @@ local function reconnectNetwork(serviceName)
         hs.timer.doAfter(1, openNetwork)
     end
 
-    openApplication('System Settings', opened)
+    openApplication("System Settings", opened)
   end
 
   return {

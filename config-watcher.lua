@@ -10,7 +10,7 @@ local FILE_CHANGED = {
 }
 
 local function fileModified(changes)
-  if not changes['itemIsFile'] then
+  if not changes["itemIsFile"] then
     return false
   end
 

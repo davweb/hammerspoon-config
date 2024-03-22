@@ -1,6 +1,6 @@
 -- luacheck: globals hs store
 
-local networkReset = require('network-reset')
+local networkReset = require("network-reset")
 
 -- Get the device name for a Service name
 local function getDeviceForService(serviceName)
@@ -31,7 +31,7 @@ local function hasSelfAssignedIPAddress(deviceName)
         print(deviceName .. " has no IP Address")
         return false
     -- If we have 169.254.x.x address that's bad
-    elseif ipAddress:find('169.254.', 1, true) == 1 then
+    elseif ipAddress:find("169.254.", 1, true) == 1 then
         print(deviceName .. " has the self-assigned IP Address " .. ipAddress)
         return true
     -- If we have an "ordinary" IP address that's OK

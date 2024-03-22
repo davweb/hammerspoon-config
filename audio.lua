@@ -23,9 +23,9 @@ local function deviceChanged(change)
     -- Trailing space in "dIn " string is intentional
     if change == "dIn " then
         local input = hs.audiodevice.current(true)
-        print("Default input audio device changed to " .. input['name'])
+        print("Default input audio device changed to " .. input["name"])
 
-        if input['name'] == "David’s AirPods Pro" then
+        if input["name"] == "David’s AirPods Pro" then
             local mic = hs.audiodevice.findInputByName("MacBook Pro Microphone")
             mic:setDefaultInputDevice()
             print("Switching default input to " .. mic:name())
