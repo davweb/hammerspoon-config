@@ -29,13 +29,13 @@ windows.addCategory("browsers", {
   "1Password"
 })
 windows.addCategory("personal", {
-  "Spark",
   "Messages",
-  "Deliveries",
-  "WhatsApp",
   "Signal",
   "Parcel",
-  "Reeder"
+  "Reeder",
+  "WhatsApp",
+  "Fastmail",
+  "Mimestream"
 })
 windows.addCategory("social", {
   "Tweetbot",
@@ -44,7 +44,7 @@ windows.addCategory("social", {
 windows.addCategory("messages", {
   "Contacts",
   "Slack",
-  "GoodNotes"
+  "Goodnotes"
 })
 windows.addCategory("calendars", {
   "Calendar",
@@ -63,7 +63,8 @@ windows.addCategory("editors", {
   "Tot",
   "MacDown",
   "Dictionary",
-  "Text Edit"
+  "Text Edit",
+  "Obsidian"
 })
 windows.addCategory("media", {
   "Spotify",
@@ -72,7 +73,7 @@ windows.addCategory("media", {
   "iPlayer Radio"
 })
 windows.addCategory("conferencing", {
-  "Microsoft Teams"
+  "Microsoft Teams (work or school)"
 })
 
 
